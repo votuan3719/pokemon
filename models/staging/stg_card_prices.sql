@@ -2,8 +2,9 @@ with cards as (
     select
         card.value:cardId as card_id,
         card.value:set.id as set_id,
+        card.value:tcg,
         card.value:tcgplayerHistory.priceHistory._doc as tcg_history
-    from price_tracker_api,
+    from {{ source("dbt_pokemon", "price_tracker_api") }},
         lateral flatten (json_data) card
 ),
 editions as (
