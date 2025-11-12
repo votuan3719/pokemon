@@ -1,9 +1,8 @@
 version: 2
 
 sources:
-  - name: dbt_pokemon
-    config:
-      enabled: true
+  - name: pokemon
+    schema: public
     tables:
       - name: tcg_pokemon_api
       - name: tcg_sets_api

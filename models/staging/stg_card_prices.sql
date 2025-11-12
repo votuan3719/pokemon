@@ -4,14 +4,14 @@ with cards as (
         card.value:set.id as set_id,
         card.value:tcg,
         card.value:tcgplayerHistory.priceHistory._doc as tcg_history
-    from {{ source("dbt_pokemon", "price_tracker_api") }},
+    from {{ source("pokemon", "price_tracker_api") }},
         lateral flatten (json_data) card
 ),
 editions as (
     select
         card_id,
         set_id,
-        edition.key as card_edition,
+        edition.key as rarity,
         edition.value:low as price_low,
         edition.value:mid as price_mid,
         edition.value:high as price_high,
@@ -23,7 +23,7 @@ low_prices as (
     select
         card_id,
         set_id,
-        card_edition,
+        rarity,
         low.value:date as date,
         low.value:price as price_low
     from editions,
@@ -33,7 +33,7 @@ mid_prices as (
     select
         card_id,
         set_id,
-        card_edition,
+        rarity,
         mid.value:date as date,
         mid.value:price as price_mid
     from editions,
@@ -43,7 +43,7 @@ high_prices as (
     select
         card_id,
         set_id,
-        card_edition,
+        rarity,
         high.value:date as date,
         high.value:price as price_high
     from editions,
@@ -53,7 +53,7 @@ market_prices as (
     select
         card_id,
         set_id,
-        card_edition,
+        rarity,
         market.value:date as date,
         market.value:price as market_price
     from editions,
@@ -63,10 +63,10 @@ prices as (
     select *
     from low_prices
     join mid_prices
-        using(card_id, set_id, card_edition, date)
+        using(card_id, set_id, rarity, date)
     join high_prices
-        using(card_id, set_id, card_edition, date)
+        using(card_id, set_id, rarity, date)
     join market_prices
-        using(card_id, set_id, card_edition, date)
+        using(card_id, set_id, rarity, date)
 )
 select * from prices
