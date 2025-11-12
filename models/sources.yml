@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: dbt_pokemon
+  - name: pokemon.public
     config:
       enabled: true
     tables:
