@@ -1,6 +1,7 @@
 select 
     pokemon.value:id as card_id,
     pokemon.value:name as name,
+    pokemon.value:set_id as set_id,
     pokemon.value:supertype as supertype,
     pokemon.value:artist as artist,
     pokemon.value:image as img_url
