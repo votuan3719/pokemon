@@ -5,4 +5,4 @@ select
     json_data:rarity as rarity,
     json_data:artist as artist,
     json_data:images:large as img_url
-from {{ source("dbt_pokemon", "tcg_pokemon_api") }}
+from {{ source("pokemon.public", "tcg_pokemon_api") }}

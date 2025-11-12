@@ -4,7 +4,7 @@ with cards as (
         card.value:set.id as set_id,
         card.value:tcg,
         card.value:tcgplayerHistory.priceHistory._doc as tcg_history
-    from {{ source("dbt_pokemon", "price_tracker_api") }},
+    from {{ source("pokemon.public", "price_tracker_api") }},
         lateral flatten (json_data) card
 ),
 editions as (
