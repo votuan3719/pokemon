@@ -6,9 +6,13 @@ with prices as (
             p.price_mid::float as price_mid,
             p.price_high::float as price_high,
             p.price_market::float as price_market
-        from {{ ref("stg_card_prices") }} as p
-        left join {{ ref("init_cards") }} as c 
-            on p.card_id = c.card_id
-    )
-select * from prices
+        from {{ ref("dim_cards") }} as c
+        left join {{ ref("dim_rarities")}} as r
+            on c.rarity_key = r.rarity_key
+        left join {{ ref("stg_card_prices") }} as p
+            on c.card_id = p.card_id
+            and r.card_rarity = p.card_rarity
+)
+select * 
+from prices
 order by card_key, date

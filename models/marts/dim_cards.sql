@@ -1,6 +1,5 @@
-with rarities as (
+with cards as (
     select
-        c.card_key,
         c.card_id,
         c.card_name,
         c.set_id,
@@ -12,23 +11,23 @@ with rarities as (
     cross join {{ ref("init_rarities") }} as r
 ),
 card_rarities as (
-    select distinct card_key, card_rarity
-    from {{ ref("init_card_prices") }}
+    select distinct card_id, card_rarity
+    from {{ ref("stg_card_prices") }}
 ),
-cards as (
+unique_cards as (
     select 
-        row_number() over(order by cr.card_key, cr.card_rarity) as card_key,
-        r.card_id,
-        r.card_name,
-        r.set_id,
-        r.super_type,
-        r.artist_name,
-        r.img_url,
-        r.card_rarity
+        row_number() over(order by c.set_id, regexp_substr(c.card_id, '\\d+$')::int) as card_key,
+        c.card_id,
+        c.card_name,
+        c.set_id,
+        c.super_type,
+        c.artist_name,
+        c.img_url,
+        c.card_rarity
     from card_rarities as cr
-    left join rarities as r
-        on cr.card_key = r.card_key
-        and cr.card_rarity = r.card_rarity
+    left join cards as c
+        on cr.card_id = c.card_id
+        and cr.card_rarity = c.card_rarity
 )
 select 
     c.card_key as card_key,
@@ -39,7 +38,7 @@ select
     r.rarity_key as rarity_key,
     a.artist_key as artist_key,
     c.img_url as img_url
-from cards as c
+from unique_cards as c
 left join {{ ref("init_sets") }} as s
     on c.set_id = s.set_id
 left join {{ ref("init_rarities")}} as r

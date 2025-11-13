@@ -9,7 +9,6 @@ with cards as (
     from {{ ref("stg_cards") }}
 )
 select 
-    row_number() over(order by set_id, regexp_substr(card_id, '\\d+$')::int) as card_key,
     *
 from cards
-order by card_key
+order by set_id, regexp_substr(card_id, '\\d+$')::int
