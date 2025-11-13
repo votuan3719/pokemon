@@ -1,12 +1,11 @@
 with artists as (
     select
-        distinct artist
-    from {{ ref("stg_cards") }}
-    where artist is not null
-    order by artist
+        distinct artist_name
+    from {{ ref("init_cards") }}
+    where artist_name is not null
 )
 select
-    row_number() over(order by artist) as artist_key,
+    row_number() over(order by artist_name) as artist_key,
     *
 from artists
 order by artist_key

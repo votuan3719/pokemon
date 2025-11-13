@@ -7,3 +7,4 @@ select
     pokemon_set.value:images.logo as logo_url
 from {{ source("pokemon", "tcg_sets_api")}},
     lateral flatten (json_data) pokemon_set
+order by release_date

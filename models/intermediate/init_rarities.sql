@@ -1,12 +1,11 @@
-with rarity as (
+with rarities as (
     select
-        distinct rarity
+        distinct card_rarity::varchar as card_rarity
     from {{ ref("stg_card_prices") }}
-    where rarity is not null
-    order by rarity
+    where card_rarity is not null
 )
 select
-    row_number() over(order by rarity) as rarity_key,
+    row_number() over(order by card_rarity) as rarity_key,
     *
-from rarity
+from rarities
 order by rarity_key
