@@ -1,9 +1,14 @@
 select
-    c.card_key::int as card_key,
-    c.card_id::varchar as card_id,
-    c.name::varchar as card_name,
-    c.supertype::varchar as supertype,
-    c.artist::varchar as artist,
-    c.img_url::varchar as img_url
+    c.card_key,
+    c.card_id,
+    c.card_name,
+    c.super_type,
+    c.img_url,
+    s.set_key,
+    a.artist_key
 from {{ ref("init_cards") }} as c
+left join {{ ref("init_sets") }} as s
+    on c.set_id = s.set_id
+left join {{ ref("init_artists") }} as a
+    on c.artist_name = a.artist_name
 order by card_key
